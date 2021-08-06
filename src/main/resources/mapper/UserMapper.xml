@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.xdclass.online_xdclass.mapper.UserMapper">
+
+    <!--根据手机号查询用户信息-->
+    <select id="findByPhone" resultType="User">
+        select * from online_xdclass.user where phone =#{phone}
+    </select>
+
+    <!--根据号码和密码查询用户-->
+    <select id="findByPhoneAndPwd" resultType="User">
+        select *
+        from online_xdclass.user where phone=#{phone} and pwd = #{pwd};
+    </select>
+
+
+    <!--根据用户id查询用户信息-->
+    <select id="findByUserId" resultType="User">
+        select * from online_xdclass.user where id=#{user_id}
+    </select>
+
+    <!--注册一个用户
+    #{name},#{pwd},#{headImg},#{phone},#{createTime}，这里面的是外面传进来的值，是User类的字段名
+    -->
+    <insert id="save" parameterType="User">
+        insert into online_xdclass.user(name, pwd, head_img, phone, create_time)
+        values (#{name},#{pwd},#{headImg},#{phone},#{createTime})
+    </insert>
+</mapper>
