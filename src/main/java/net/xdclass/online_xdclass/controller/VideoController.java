@@ -5,12 +5,15 @@ import net.xdclass.online_xdclass.model.entity.VideoBanner;
 import net.xdclass.online_xdclass.service.VideoService;
 import net.xdclass.online_xdclass.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /*
  * @description:
@@ -41,12 +44,9 @@ public class VideoController {
     **/
     @GetMapping("find_detail_by_id")
     public JsonData findDetailById(@RequestParam(value = "video_id",required = true) int videoId){
-
-
         Video video = videoService.finDetailById(videoId);
         return JsonData.buildSuccess(video);
     }
-
 
     /*
     * @Description: 轮播图列表
@@ -57,5 +57,26 @@ public class VideoController {
     public JsonData indexBanner(){
         List<VideoBanner> bannerList = videoService.listBanner();
         return JsonData.buildSuccess(bannerList);
+    }
+
+
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    //缓存key
+    private static final String VIDEO_BANNER_CACHE_KEY = "video:banner:key";
+
+    @GetMapping("list_banner_redis")
+    public JsonData indexBannerRedis(){
+        Object o = redisTemplate.opsForValue().get(VIDEO_BANNER_CACHE_KEY);
+        if (o != null){
+            List<VideoBanner> list = (List<VideoBanner>) o;
+            return JsonData.buildSuccess(list);
+        }else{
+            List<VideoBanner> list = videoService.listBannerMySQL();
+            redisTemplate.opsForValue().set(VIDEO_BANNER_CACHE_KEY, list,10, TimeUnit.MINUTES);
+            return JsonData.buildSuccess(list);
+        }
     }
 }

@@ -21,6 +21,13 @@ public interface VideoService {
     List<VideoBanner> listBanner();
 
     /*
+    * @Description: 直接调用数据库查询所有的轮播图内容
+    * @Author: Mr.Felix
+    * @Time: 2021/8/7
+    **/
+    List<VideoBanner> listBannerMySQL();
+
+    /*
     * @Description: 查询视频详情，包含章，集信息
     * @Author: Mr.Felix
     * @Time: 2021/7/29

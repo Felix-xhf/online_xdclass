@@ -9,6 +9,8 @@ import net.xdclass.online_xdclass.utils.BaseCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 
@@ -51,29 +53,45 @@ public class VideoServiceImpl implements VideoService {
     }
 
     /*
-    * @Description: 查找轮播图
+    * @Description: 查找轮播图 + 本地Guava缓存
     * @Author: Mr.Felix
     * @Time: 2021/7/29
     **/
     @Override
     public List<VideoBanner> listBanner() {
         try{
-            Object cacheObj =baseCache.getTenMinuteCache().get(CacheKeyManager.INDEX_BANNER_KEY, ()->{
+            /*
+            * getTenMinuteCache,到本地TenMinuteCache寻找缓存数据
+            * 每个存到本地Guava缓存的都有一个key与之对应，所以需要一个config来管理key
+            * 会使用到回调函数，回调函数使用的是Lambda表达式来写的，格式  ()->{方法体}
+            * */
+            Object cacheObj = baseCache.getTenMinuteCache().get(CacheKeyManager.INDEX_BANNER_KEY, ()->{
                         List<VideoBanner> bannerList = videoMapper.listVideoBanner();
                         System.out.println("从数据库⾥里里⾯面找轮播图列列表");
                         return bannerList;
                     });
+
+            //缓存一般取出来都是object类，这个时候需要强转成我们需要的类型，强转前需要先判断一下是不是我们需要的类型，防止误取出其他的缓存信息
             if(cacheObj instanceof List){
-                List<VideoBanner> bannerList = (List<VideoBanner>)cacheObj;
-                return bannerList;
+                return (List<VideoBanner>)cacheObj;
             }
         }catch (Exception e){
             e.printStackTrace();
         }
         return null;
 
-//        //不使用缓存
+//        //不使用Guava本地缓存
 //        return videoMapper.listVideoBanner();
+    }
+
+    /*
+    * @Description: 不使用本地缓存，直接查询数据库
+    * @Author: Mr.Felix
+    * @Time: 2021/8/7
+    **/
+    @Override
+    public List<VideoBanner> listBannerMySQL() {
+        return videoMapper.listVideoBanner();
     }
 
     @Override
