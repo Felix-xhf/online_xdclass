@@ -87,11 +87,6 @@
             <optional>true</optional>
         </dependency>
 
-        <!--redis-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
 
         <!--Lettuce连接池介绍(添加连接池)-->
         <dependency>
@@ -99,16 +94,26 @@
             <artifactId>commons-pool2</artifactId>
         </dependency>
 
-        <!--Jedis连接池介绍（可以不排除lettuce依赖包）-->
+
+        <!--redis依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
+<!--            <exclusions>-->
+<!--                <exclusion>-->
+<!--                    <groupId>io.lettuce</groupId>-->
+<!--                    <artifactId>lettuce-core</artifactId>-->
+<!--                </exclusion>-->
+<!--            </exclusions>-->
         </dependency>
+
+        <!--Jedis连接池介绍（可以不排除lettuce依赖包）-->
         <dependency>
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
         </dependency>
 
+        <!--kaptcha依赖包-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>kaptcha-spring-boot-starter</artifactId>

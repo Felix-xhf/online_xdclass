@@ -6,7 +6,6 @@ import net.xdclass.online_xdclass.service.VideoService;
 import net.xdclass.online_xdclass.utils.JsonData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,6 +47,7 @@ public class VideoController {
         return JsonData.buildSuccess(video);
     }
 
+
     /*
     * @Description: 轮播图列表
     * @Author: Mr.Felix
@@ -63,18 +63,23 @@ public class VideoController {
 
     @Autowired
     private RedisTemplate redisTemplate;
-
-    //缓存key
+    //缓存存在缓存的key
     private static final String VIDEO_BANNER_CACHE_KEY = "video:banner:key";
-
+    /*
+    * @Description: 使用Redis访问轮播图列表
+    * @Author: Mr.Felix
+    * @Time: 2021/8/9
+    **/
     @GetMapping("list_banner_redis")
     public JsonData indexBannerRedis(){
         Object o = redisTemplate.opsForValue().get(VIDEO_BANNER_CACHE_KEY);
         if (o != null){
             List<VideoBanner> list = (List<VideoBanner>) o;
+//            System.out.println("从Redis缓存中读取");
             return JsonData.buildSuccess(list);
         }else{
             List<VideoBanner> list = videoService.listBannerMySQL();
+//            System.out.println("从MySQL中去查找数据");
             redisTemplate.opsForValue().set(VIDEO_BANNER_CACHE_KEY, list,10, TimeUnit.MINUTES);
             return JsonData.buildSuccess(list);
         }

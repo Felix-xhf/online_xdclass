@@ -12,13 +12,17 @@ import java.util.Properties;
 
 @Configuration
 /*
-* @Description: 验证码配置、
+* @Description: 验证码配置
 * @Author: Mr.Felix
 * @Time: 2021/8/6
 **/
 public class CaptchaConfig {
     @Bean
     @Qualifier("captchaProducer") //取一个名称
+    /*
+    * 有些场景下，仅仅靠@Autowired是不足以让Spring知道到底要注入哪个Bean
+    * 所以需要给Bean一个标志
+    * */
     public DefaultKaptcha kaptcha() {
         DefaultKaptcha kaptcha = new DefaultKaptcha();
         Properties properties = new Properties();

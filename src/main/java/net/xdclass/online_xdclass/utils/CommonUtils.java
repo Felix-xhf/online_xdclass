@@ -31,7 +31,7 @@ public class CommonUtils {
     }
 
     /*
-     * @Description: 获取ip地址
+     * @Description: 获取用户的ip地址
      * @Author: Mr.Felix
      * @Time: 2021/8/6
      **/
