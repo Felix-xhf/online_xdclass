@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.xml.crypto.Data;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -83,5 +84,18 @@ public class VideoController {
             redisTemplate.opsForValue().set(VIDEO_BANNER_CACHE_KEY, list,10, TimeUnit.MINUTES);
             return JsonData.buildSuccess(list);
         }
+    }
+    
+
+    private static final String DAILY_RANK_KEY = "video:rank:daily";
+    /*
+    * @Description: 使用Redis的List来保存非即时更新的热点视频
+    * @Author: Mr.Felix
+    * @Time: 2021/8/11
+    **/
+    @RequestMapping("daily_rank")
+    public JsonData videoDailyRank(){
+        List<Video> list = redisTemplate.opsForList().range(DAILY_RANK_KEY, 0, -1);
+        return JsonData.buildSuccess(list);
     }
 }

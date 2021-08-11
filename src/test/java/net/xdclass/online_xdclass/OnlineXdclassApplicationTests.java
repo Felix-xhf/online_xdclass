@@ -1,10 +1,14 @@
 package net.xdclass.online_xdclass;
 
+import net.xdclass.online_xdclass.model.entity.Video;
+import net.xdclass.online_xdclass.service.VideoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+
+import java.util.List;
 
 @SpringBootTest
 class OnlineXdclassApplicationTests {
@@ -36,4 +40,14 @@ class OnlineXdclassApplicationTests {
 
     }
 
+    @Autowired
+    private VideoService videoService;
+    private static final String DAILY_RANK_KEY = "video:rank:daily";
+    @Test
+    public void saveRank(){
+        List<Video> list = videoService.listVideo();
+        for (Video video : list) {
+            redisTemplate.opsForList().rightPush(DAILY_RANK_KEY,video);
+        }
+    }
 }
